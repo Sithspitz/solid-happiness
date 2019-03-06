@@ -65,4 +65,19 @@ del2 <- del1[, -c(5:36)]
 ## See the final inform_tidying_script for a good version of all of this, not really working here
 
 
-# Last thing to do is to combine all of them 
+# Last thing to do is to combine all the count data into one sheet
+## Want to add up all the data from all the different ROIs
+### Probably need if statements to do this
+
+# Test6
+## First actually load the last exported csv file back in as something useful and seperate
+setwd("L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/S349104/Export/CSV/Tidy")
+sum_base <- read.csv("S349104_Total_Tidy.csv")
+
+s1 <- sum_base[sum_base$Tissue.Category == "All", ]
+
+s_All <- s1[s1$Phenotype == "All", ]
+
+All <- sum(s_All$Total.Cells)
+
+# This approach works, then can bind it back in a table to create something cool

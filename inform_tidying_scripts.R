@@ -61,3 +61,37 @@ dir.create("L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymp
 write.csv(del2, file = "L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/S349104/Export/CSV/Tidy/S349104_Total_Tidy.csv"
           , row.names = F)
 
+
+
+# Getting the total numbers of phenotype data per sample #
+
+# Set WD
+setwd("L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/S349104/Export/CSV/Tidy")
+
+# Re-load the Sample_Total_Tidy.csv file
+sum_base <- read.csv("S349104_Total_Tidy.csv")
+
+# Subsetting the total numbers for each ROI
+sub_all <- sum_base[sum_base$Tissue.Category == "All", ]
+
+# Subsetting for each different phenotype category
+s_all <- sub_all[sub_all$Phenotype == "All", ]
+s_artefact <- sub_all[sub_all$Phenotype == "Artefact", ]
+s_other <- sub_all[sub_all$Phenotype == "Other", ]
+s_rorgt <- sub_all[sub_all$Phenotype == "RORgT", ]
+
+# Calculating totals for each phenotype
+all <- sum(s_all$Total.Cells)
+artefact <- sum(s_artefact$Total.Cells)
+other <- sum(s_other$Total.Cells)
+rorgt <- sum(s_rorgt$Total.Cells)
+
+# Bind these into a table
+Sample_Totals <- data.frame(RORgT = rorgt, Other = other, Artefact = artefact, All = all)
+
+# Export as a CSV to 'Tidy' directory
+## Change the name to 'Sample_Phenotype_Totals.csv' format
+write.csv(Sample_Totals, file = "L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/S349104/Export/CSV/Tidy/S349104_Phenotype_Totals.csv"
+          , row.names = F)
+
+
