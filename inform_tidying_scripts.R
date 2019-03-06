@@ -34,3 +34,30 @@ setwd("L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/R_wd/solid-happ
 
 # Combining CSV files into one/sample #
 
+# 'setwd()' to the directory with files for conversion
+setwd("L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/S349104/Export/CSV/")
+
+# Define the 'multMerge' function
+multMerge = function(mypath){
+  filenames = list.files(path = mypath, full.names = TRUE)
+  datalist = lapply(filenames, 
+                    function(x){read.csv(file = x,
+                                         header = TRUE,
+                                         stringsAsFactors = FALSE)})
+  Reduce(function(x,y) {merge(x, y, all = TRUE)}, datalist)
+}
+
+# Run the 'multMerge' function in current WD
+merge1 <- multMerge("L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/S349104/Export/CSV/")
+
+# Tidying up the columns 
+del1 <- merge1[, -c(1, 5)]
+del2 <- del1[, -c(5:36)]
+
+# Create and export to the 'tidy' directory
+## Name the 'write.csv' file as Sample_Total_Tidy.csv format
+dir.create("L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/S349104/Export/CSV/Tidy")
+
+write.csv(del2, file = "L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/S349104/Export/CSV/Tidy/S349104_Total_Tidy.csv"
+          , row.names = F)
+
