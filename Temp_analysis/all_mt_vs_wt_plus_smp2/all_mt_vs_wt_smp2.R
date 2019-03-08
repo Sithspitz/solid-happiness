@@ -2,7 +2,7 @@
 
 
 # Change wd and load packages
-setwd("./Temp_analysis/all_mt_vs_wt/")
+setwd()
 
 library(ggpubr)
 library(ggplot2)
@@ -12,11 +12,11 @@ library(scales)
 # Mann-Whitney U Test #
 
 # Import CSV created in excel
-mt_vs_wt_data <- read.csv("all_mt_vs_wt.csv")
+mt_vs_wt_data <- read.csv("all_mt_vs_wt_smp2.csv")
 
 # Subsetting dependent on if WT or MT
-s_wt <- mt_vs_wt_data[mt_vs_wt_data$mutation == "WT", ]
-s_mt <- mt_vs_wt_data[mt_vs_wt_data$mutation == "MT", ]
+s_wt <- mt_vs_wt_data[mt_vs_wt_data$mutation == "TRACERx WT", ]
+s_mt <- mt_vs_wt_data[mt_vs_wt_data$mutation == "TRACERx MT", ]
 
 wt_rorgt <- s_wt$rorgt
 mt_rorgt <- s_mt$rorgt
@@ -32,13 +32,16 @@ pVal_3 <- paste("p = ", pVal_2, sep = "")
 # Violin Plot #
 
 # Violin plot fill colours
-cbcols <- c("WT" = "#0000FF",
-            "MT" = "#FF0000")
+cbcols <- c("TRACERx WT" = "#0000FF",
+            "TRACERx MT" = "#FF0000",
+            "SMP2 WT" = "#00FF00",
+            "SMP2 MT" = "#FF00FF")
 
 # Specifying the order of the groups (vs being alphabetised)
 ## List of comparisons for 'ggpubr' stats
-mt_vs_wt_data$mutation <- factor(mt_vs_wt_data$mutation, levels = c("WT", "MT"))
-my_comparisons <- list(c("WT", "MT"))
+mt_vs_wt_data$mutation <- factor(mt_vs_wt_data$mutation, levels = 
+                                   c("TRACERx WT", "TRACERx MT", "SMP2 WT", "SMP2 MT"))
+my_comparisons <- list(c("TRACERx WT", "TRACERx MT"), c("SMP2 WT", "SMP2 WT"))
 
 # Violin plotting, stats and start export
 cairo_pdf("./violin_1.pdf")
@@ -53,7 +56,7 @@ violin_1 <- ggplot(mt_vs_wt_data, aes(x = mutation, y = rorgt)) +
   scale_fill_manual(values = cbcols) +
   labs(x = "Mutational Subtype", y = "Number of ROR\u03B3T Positive Cells/10,000 Cells") +
   theme_bw() +
-  theme(axis.text = element_text(size = 16)) +
+  theme(axis.text = element_text(size = 10)) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   theme(legend.position = "none") + 
   ggtitle("ROR\u03B3T Lymphocyte Expression in Mutational Subtypes of NSCLC") +
