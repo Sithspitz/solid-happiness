@@ -1,5 +1,5 @@
 # solid-happiness
-Tidying up InForm export files
+Tidying up InForm export files, also basic analysis scripts.
 
 Original inception date 06/03/2019
 
