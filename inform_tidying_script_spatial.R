@@ -4,6 +4,7 @@
 
 # Summary of subsets numbers by Tissue Category #
 
+library(ggpubr, ggplot2, scales)
 setwd("L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/LTX001/Export/CSV/Tidy/")
 total <- read.csv("LTX001_Total_Tidy.csv")
 
@@ -101,8 +102,49 @@ write.csv(roi_totals, file = "L:/Richard B/Analysis/2019/February 2019/RORgT_IHC
 Tidy_ROI <- read.csv("LTX001_ROI_Totals.csv")
 
 # Calculate The Quotient
-## Firstly 
+## Firstly Get The Total Number of Cells (aka: "Other" + "RORgT" columns)
+### Then divide this value by 10,000 to get the "quotient"
+quotient <- Tidy_ROI[1, ]
+quotient <- sum(quotient$Other, quotient$RORgT)
+quotient <- quotient/10000
+
+# Calculate The Number of RORgT Positive Cells/10,000 Using The "quotient"
+roi_names <- c("Total", "Tumour", "Stroma", "Lymphocyte Aggregates", "Necrosis", "White Space")
+ROI_per_10k <- data.frame(ROI = roi_names, RORgT_Positive_Cells_per_10k_Cells =  Tidy_ROI$RORgT/quotient)
+
+# Export as a CSV to 'Tidy' directory
+## Change the name to 'Sample_ROI_Prevalence.csv' format
+write.csv(ROI_per_10k, file = "L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/LTX001/Export/CSV/Tidy/LTX001_ROI_Prevalence.csv"
+          , row.names = F)
 
 
 
+# Quick Summmary Dotplot #
+
+# Import and Specifiying Order of Groups
+## List of Comparisons for 'ggpubr'
+ROI_prev <- read.csv("LTX001_ROI_Prevalence.csv")
+ROI_prev$ROI <- factor(ROI_prev$ROI, levels = c("Lymphocyte Aggregates", "Tumour", "Stroma", "Total", "Necrosis", "White Space"))
+my_comparisons <- list(c("Lymphocyte Aggregates", "Tumour", "Stroma"))
+
+# Dot Plotting, Stats and Start Export
+cairo_pdf("L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/LTX001/Export/CSV/Tidy/LTX001_ROI_Prevalence.pdf")
+dot_1 <- ggplot(ROI_prev, aes(x = ROI, y = RORgT_Positive_Cells_per_10k_Cells)) +
+  geom_dotplot(binaxis = "y", stackdir = "center", dotsize = 0.5, color = "Black", fill = "Black") +
+  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                 labels = trans_format("log10", math_format(10^.x))) + 
+  labs(x = "Segmented ROI", y = "Number of ROR\u03B3T Positive Cells/10,000 Cells") +
+  theme_bw() +
+  theme(axis.text = element_text(size = 16)) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  theme(legend.position = "none") + 
+  ggtitle("ROR\u03B3T Lymphocyte Expression in LTX001 ROIs") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_compare_means(comparisons = my_comparisons,
+                     label = "p.signif", method = "wilcox.test") +
+  annotate("text", label = pVal_3, x = 2.4, y = 0.22, size = 4)
+
+# View plot and save
+dot_1
+dev.off()
 
