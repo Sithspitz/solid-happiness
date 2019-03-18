@@ -7,3 +7,4 @@ Scripts created as part of the RORgT IHC InForm analysis to tidy up and combine 
 
 Can be used in subsequent analyses to combine and tidy up data from InForm.
 
+Created another script later on (18/03/2019) called 'inform_tidying_script_spatial.R' which is used to give summary data of phenotypes by the spatial distribution.
