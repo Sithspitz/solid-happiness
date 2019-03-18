@@ -4,7 +4,9 @@
 
 # Summary of subsets numbers by Tissue Category #
 
-library(ggpubr, ggplot2, scales)
+library(ggplot2)
+library(ggpubr)
+library(scales)
 setwd("L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/LTX001/Export/CSV/Tidy/")
 total <- read.csv("LTX001_Total_Tidy.csv")
 
@@ -122,29 +124,26 @@ write.csv(ROI_per_10k, file = "L:/Richard B/Analysis/2019/February 2019/RORgT_IH
 # Quick Summmary Dotplot #
 
 # Import and Specifiying Order of Groups
-## List of Comparisons for 'ggpubr'
 ROI_prev <- read.csv("LTX001_ROI_Prevalence.csv")
 ROI_prev$ROI <- factor(ROI_prev$ROI, levels = c("Lymphocyte Aggregates", "Tumour", "Stroma", "Total", "Necrosis", "White Space"))
-my_comparisons <- list(c("Lymphocyte Aggregates", "Tumour", "Stroma"))
 
 # Dot Plotting, Stats and Start Export
 cairo_pdf("L:/Richard B/Analysis/2019/February 2019/RORgT_IHC_060219/RORgT_Lymphocyte_Quant_060219/LTX001/Export/CSV/Tidy/LTX001_ROI_Prevalence.pdf")
 dot_1 <- ggplot(ROI_prev, aes(x = ROI, y = RORgT_Positive_Cells_per_10k_Cells)) +
   geom_dotplot(binaxis = "y", stackdir = "center", dotsize = 0.5, color = "Black", fill = "Black") +
-  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
-                 labels = trans_format("log10", math_format(10^.x))) + 
   labs(x = "Segmented ROI", y = "Number of ROR\u03B3T Positive Cells/10,000 Cells") +
   theme_bw() +
-  theme(axis.text = element_text(size = 16)) +
+  theme(axis.text = element_text(size = 8)) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   theme(legend.position = "none") + 
   ggtitle("ROR\u03B3T Lymphocyte Expression in LTX001 ROIs") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  stat_compare_means(comparisons = my_comparisons,
-                     label = "p.signif", method = "wilcox.test") +
-  annotate("text", label = pVal_3, x = 2.4, y = 0.22, size = 4)
+  theme(plot.title = element_text(hjust = 0.5))
 
 # View plot and save
 dot_1
 dev.off()
 
+
+
+# If I need to change to a log axis then use the below #
+# scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),labels = trans_format("log10", math_format(10^.x)))
